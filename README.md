@@ -165,16 +165,16 @@ Adding a master slave configuration in the original (osixia/docker-openldap) bas
      
         #!/bin/bash
 	#start master
-	LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION="true"  --detach osixia/openldap:1.1.2)
+	LDAP_CID=$(docker run --name ldap-master --hostname ldap.example.org --env LDAP_REPLICATION="true"  --detach xiaoq/openldap:latest)
 	LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
 
 	#start slave 1
-	LDAP1_CID=$(docker run --hostname ldap1.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=001 --detach osixia/openldap:1.1.2)
+	LDAP1_CID=$(docker run --name ldap-slave1 --hostname ldap1.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=001 --detach xiaoq/openldap:latest)
 	LDAP1_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP1_CID)
 
 
 	#start slave 2
-	LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=002 --detach osixia/openldap:1.1.2)
+	LDAP2_CID=$(docker run --name ldap-slave2 --hostname ldap2.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=002 --detach xiaoq/openldap:latest)
 	LDAP2_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP2_CID)
 
 	#configure hosts
