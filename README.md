@@ -11,6 +11,8 @@ Latest release: 1.1.2 - OpenLDAP 2.4.40 -  [Changelog](CHANGELOG.md) | [Docker H
 
 A docker image to run OpenLDAP.
 
+Supports master-slave configurationMulti master replication
+
 > OpenLDAP website : [www.openldap.org](http://www.openldap.org/)
 
 - [Contributing](#contributing)
@@ -27,6 +29,7 @@ A docker image to run OpenLDAP.
 		- [Use your own certificate](#use-your-own-certificate)
 		- [Disable TLS](#disable-tls)
 	- [Multi master replication](#multi-master-replication)
+	- [Master Slave replication](#master-slave-replication)
 	- [Fix docker mounted file problems](#fix-docker-mounted-file-problems)
 	- [Debug](#debug)
 - [Environment Variables](#environment-variables)
@@ -153,42 +156,29 @@ Add --env LDAP_TLS=false to the run command:
 	docker run --env LDAP_TLS=false --detach osixia/openldap:1.1.2
 
 ### Multi master replication
-Quick example, with the default config.
+    Since the modification of some configuration is not supported, but you can easily support multi-master configuration, go to the main branch[Multi master replication](https://github.com/osixia/docker-openldap#multi-master-replication)
 
-	#Create the first ldap server, save the container id in LDAP_CID and get its IP:
-	LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true --detach osixia/openldap:1.1.2)
+### Master Slave replication
+        #!/bin/bash
+	#start master
+	LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION="true"  --detach osixia/openldap:1.1.2)
 	LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
 
-	#Create the second ldap server, save the container id in LDAP2_CID and get its IP:
-	LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION=true --detach osixia/openldap:1.1.2)
+	#start slave 1
+	LDAP1_CID=$(docker run --hostname ldap1.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=001 --detach osixia/openldap:1.1.2)
+	LDAP1_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP1_CID)
+
+
+	#start slave 2
+	LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION="true" --env MASTER_SLAVE=slave --env MASTER_ADDRESS=ldap.example.org:389 --env RID=002 --detach osixia/openldap:1.1.2)
 	LDAP2_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP2_CID)
 
-	#Add the pair "ip hostname" to /etc/hosts on each containers,
-	#beacause ldap.example.org and ldap2.example.org are fake hostnames
-	docker exec $LDAP_CID bash -c "echo $LDAP2_IP ldap2.example.org >> /etc/hosts"
+	#configure hosts
+	docker exec $LDAP1_CID bash -c "echo $LDAP_IP ldap.example.org >> /etc/hosts"
 	docker exec $LDAP2_CID bash -c "echo $LDAP_IP ldap.example.org >> /etc/hosts"
 
-That's it! But a little test to be sure:
 
-Add a new user "billy" on the first ldap server
 
-	docker exec $LDAP_CID ldapadd -x -D "cn=admin,dc=example,dc=org" -w admin -f /container/service/slapd/assets/test/new-user.ldif --hostname ldap.example.org -ZZ
-
-Search on the second ldap server, and billy should show up!
-
-	docker exec $LDAP2_CID ldapsearch -x -h ldap2.example.org -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin -ZZ
-
-	[...]
-
-	# billy, example.org
-	dn: uid=billy,dc=example,dc=org
-	uid: billy
-	cn: billy
-	sn: 3
-	objectClass: top
-	objectClass: posixAccount
-	objectClass: inetOrgPerson
-	[...]
 
 ### Fix docker mounted file problems
 
