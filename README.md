@@ -186,23 +186,23 @@ That's it! But a little test to be sure:
 
 Add a new user "billy" on the first ldap server
 
-docker exec $LDAP_CID ldapadd -x -D "cn=admin,dc=example,dc=org" -w admin -f /container/service/slapd/assets/test/new-user.ldif 
+         docker exec $LDAP_CID ldapadd -x -D "cn=admin,dc=example,dc=org" -w admin -f /container/service/slapd/assets/test/new-user.ldif 
 
 Search on the second ldap server, and billy should show up!
 
-docker exec $LDAP1_CID ldapsearch -x   -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin 
+         docker exec $LDAP1_CID ldapsearch -x   -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin 
 
-[...]
-
-# billy, example.org
-dn: uid=billy,dc=example,dc=org
-uid: billy
-cn: billy
-sn: 3
-objectClass: top
-objectClass: posixAccount
-objectClass: inetOrgPerson
-[...]
+	[...]
+	
+	# billy, example.org
+	dn: uid=billy,dc=example,dc=org
+	uid: billy
+	cn: billy
+	sn: 3
+	objectClass: top
+	objectClass: posixAccount
+	objectClass: inetOrgPerson
+	[...]
 
 ### Fix docker mounted file problems
 
