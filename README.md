@@ -160,7 +160,8 @@ Add --env LDAP_TLS=false to the run command:
     go to the main branch[Multi master replication](https://github.com/osixia/docker-openldap#multi-master-replication)
 
 ### Master Slave replication
-        #!/bin/bash
+Increase in master-slave configuration, increase MASTER SLAVE, MASTER ADDRESS, RID variables, the following example to start a master and two slave configuration
+      #!/bin/bash
 	#start master
 	LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION="true"  --detach osixia/openldap:1.1.2)
 	LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
