@@ -245,6 +245,9 @@ TLS options:
 
 Replication options:
 - **LDAP_REPLICATION**: Add openldap replication capabilities. Defaults to `false`
+- **MASTER_ADDRESS**: LDAP master server's address, Default to ldap.example.org:389
+- **MASTER_SLAVE**: MASTER_SLAVE start the container is a master or a slave,Default to slave
+- **RID**: Slave rid,Default 001
 
 - **LDAP_REPLICATION_CONFIG_SYNCPROV**: olcSyncRepl options used for the config database. Without **rid** and **provider** which are automatically added based on LDAP_REPLICATION_HOSTS.  Defaults to `binddn="cn=admin,cn=config" bindmethod=simple credentials=$LDAP_CONFIG_PASSWORD searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1 starttls=critical`
 
