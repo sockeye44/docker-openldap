@@ -1,4 +1,4 @@
-NAME = osixia/openldap
+NAME = xiaoq/openldap
 VERSION = 1.1.2
 
 .PHONY: all build build-nocache test tag_latest release
