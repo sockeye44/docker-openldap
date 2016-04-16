@@ -156,7 +156,8 @@ Add --env LDAP_TLS=false to the run command:
 	docker run --env LDAP_TLS=false --detach osixia/openldap:1.1.2
 
 ### Multi master replication
-    Since the modification of some configuration is not supported, but you can easily support multi-master configuration, go to the main branch[Multi master replication](https://github.com/osixia/docker-openldap#multi-master-replication)
+    Since the modification of some configuration is not supported, but you can easily support multi-master configuration,
+    go to the main branch[Multi master replication](https://github.com/osixia/docker-openldap#multi-master-replication)
 
 ### Master Slave replication
         #!/bin/bash
